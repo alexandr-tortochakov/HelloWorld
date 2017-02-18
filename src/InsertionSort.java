@@ -7,12 +7,6 @@ public class InsertionSort {
         System.out.print(Arrays.toString(newArray));
     }
 
-//    public static void swap(int[] array, int i, int j) {
-//        int temp = array[i];
-//        array[i] = array[j];
-//        array[j] = temp;
-//    }
-
     public static int[] sort(int[] array) {
         for (int i = 1; i < array.length; i++) {
             int j = i;
