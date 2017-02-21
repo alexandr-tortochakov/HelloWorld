@@ -1,34 +1,49 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class Sort {
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new FileInputStream("D:/input.txt"));
-        int count = 0;
-        while (scanner.hasNextInt()) {
-            System.out.println(scanner.nextInt());
-            count++;
+    public static void main(String[] args) {
+        if (args.length < 4) {
+            System.out.println("Недостаточно аргументов");
+            help();
+            return;
+        } else if (!args[2].equals("-i")) {
+            System.out.println("Неизвестный аргумент: " + args[2]);
+            help();
+            return;
+        } else if (!args[3].equals("-a") && !args[3].equals("-d")) {
+            System.out.println("Неизвестный аргумент: " + args[3]);
+            help();
+            return;
         }
-        scanner.close();
-
-        scanner = new Scanner(new FileInputStream("D:/input.txt"));
-
-        int[] digits = new int[count];
-        for (int i = 0; i < count; i++) {
-            digits[i] = scanner.nextInt();
+        try (Scanner scanner = new Scanner(new FileInputStream(args[0]));
+             PrintWriter writer = new PrintWriter(args[1])
+        ) {
+            ArrayList<Integer> digits = new ArrayList<>();
+            while (scanner.hasNextInt()) {
+                digits.add(scanner.nextInt());
+            }
+            int[] numbersArray = new int[digits.size()];
+            for (int i = 0; i < digits.size(); i++) {
+                numbersArray[i] = digits.get(i);
+            }
+            int[] sortedArray = sort(numbersArray);
+            if (args[3].equals("-a")) {
+                for (int i = 0; i < sortedArray.length; i++) {
+                    writer.println(Integer.toString(sortedArray[i]));
+                }
+            } else if (args[3].equals("-d")) {
+                for (int i = sortedArray.length - 1; i >= 0; i--) {
+                    writer.println(Integer.toString(sortedArray[i]));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден");
         }
-        scanner.close();
-
-        int[] sortedArray = sort(digits);
-
-        PrintWriter writer = new PrintWriter("output.txt");
-        for (int i = 0; i < sortedArray.length; i++) {
-            writer.println(Integer.toString(sortedArray[i]));
-        }
-        writer.close();
-
     }
 
     public static int[] sort(int[] array) {
@@ -45,4 +60,13 @@ public class Sort {
         }
         return array;
     }
+
+    public static void help() {
+        System.out.println("Usage: <input filename> <output filename> -i -[a|d]");
+    }
 }
+
+//    java -cp <path to sort.class directory location> Sort <path to input filename> <path to output filename> -i -d
+//    descending sorting
+//    java -cp <path to sort.class directory location> Sort <path to input filename> <path to output filename> -i -a
+//    ascending sorting
